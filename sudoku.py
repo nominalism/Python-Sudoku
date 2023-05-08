@@ -1,76 +1,80 @@
-S = [['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*'],
-     ['', '', '', '', '', '', '', '', '*']]
+S = [['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', ''],
+['', '', '', '', '', '', '', '', '*']]
 
-def exibeSudoku():
-    print('  a b c  d e f  g h i')
-    for linha in range(9):
-        print(chr(ord('A') + linha) + ' ', end='')
-        for coluna in range(9):
-            print(S[linha][coluna] + ' ', end='')
-            if (coluna + 1) % 3 == 0:
+#Function to display the Sudoku board
+def displaySudoku():
+    print(' a b c d e f g h i')
+    for row in range(9):
+        print(chr(ord('A') + row) + ' ', end='')
+        for col in range(9):
+            print(S[row][col] + ' ', end='')
+            if (col + 1) % 3 == 0:
                 print(' ', end='')
         print()
-        if (linha + 1) % 3 == 0:
-            print()    
+        if (row + 1) % 3 == 0:
+            print()
 
-def levalor():
-    l, c, valor = input("Linha, Coluna, Valor: ").split()
-    linha = ord(l) - ord('A')
-    coluna = ord(c) - ord('a')
-    if 0 <= linha <= 8:
-        if 0 <= coluna <= 8:
-            if valor == '*' or \
-                (ord('1') <= ord(valor) <= ord('9')):
-                return True, linha, coluna
+#Function to read user input for the cell value to update
+def readCellValue():
+    l, c, value = input("Row, Column, Value: ").split()
+    row = ord(l) - ord('A')
+    col = ord(c) - ord('a')
+    if 0 <= row <= 8:
+        if 0 <= col <= 8:
+            if value == '*' or (ord('1') <= ord(value) <= ord('9')):
+                return True, row, col
             else:
-                print('Valor inválido.')
+                print('Invalid value.')
                 return False, 0, 0, ''
         else:
-            print('Coluna inválida.')
+            print('Invalid column.')
             return False, 0, 0, ''
     else:
-        print('Linha Inválida.')
+        print('Invalid row.')
         return False, 0, 0, ''
 
-def verificaLinha(S, l, c, v):
+#Function to check if a value is valid for a row
+def checkRow(S, row, col, value):
     for i in range(9):
-        if i != c and S[l][i] == v:
+        if i != col and S[row][i] == value:
             return False
     return True
 
-def verificaQuadrante(S, l, c, v):
-    l_quad = int(l / 3) * 3
-    c_quad = int(c / 3) * 3
-    for i in range(l_quad, l_quad + 3): #l_quad <= i <
-            for j in range(c_quad, c_quad + 3):
-                if (i != l or j != c) and\
-                S[i][j] == v:
-                    return False
+#Function to check if a value is valid for a 3x3 quadrant
+def checkQuadrant(S, row, col, value):
+    row_quad = int(row / 3) * 3
+    col_quad = int(col / 3) * 3
+    for i in range(row_quad, row_quad + 3):
+        for j in range(col_quad, col_quad + 3):
+            if (i != row or j != col) and S[i][j] == value:
+                return False
+        return True
 
-def lerInstanciaSudoku():
-    print(' Instância Sudoku: ')
-    print('  a b c d e f g h i ')
+#Function to read the initial Sudoku board from user input
+def readSudokuInstance():
+    print(' Sudoku Instance: ')
+    print(' a b c d e f g h i ')
     for i in range(9):
-        mensagem = chr(ord('A') + i )
-        linha = input(mensagem + ' ').split()
+        message = chr(ord('A') + i )
+        row = input(message + ' ').split()
         for k in range(9):
-            S[i][k] = linha[k]
+            S[i][k] = row[k]
     print()
 
-lerInstanciaSudoku()
-exibeSudoku()
-leituraValida = False
-while not leituraValida:
-    leituraValida, linha, coluna, valor = levalor()
-    if leituraValida:
-        if verificaLinha(S, linha, coluna, valor) and\
-            verificaQuadrante(S, linha, coluna, valor):
-            S[linha][coluna] = valor
-exibeSudoku()
+readSudokuInstance()
+displaySudoku()
+inputValid = False
+
+while not inputValid:
+    inputValid, row, col, value = readCellValue()
+    if inputValid:
+        if checkRow(S, row, col, value) and checkQuadrant(S, row, col, value):
+            S[row][col] = value
+displaySudoku()
